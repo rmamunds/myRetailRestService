@@ -3,12 +3,12 @@ package product;
 public class MyProduct {
 	private String id;
 	private String name;
-	private PersistedPrice price;
+	private Price price;
 	
 	public MyProduct(){
 	}
 	
-	public MyProduct(String _id, String _name, PersistedPrice _price){
+	public MyProduct(String _id, String _name, Price _price){
 		id = _id;
 		name = _name;
 		price = _price;
@@ -22,7 +22,7 @@ public class MyProduct {
 		return name;
 	}
 
-	public PersistedPrice getPrice() {
+	public Price getPrice() {
 		return price;
 	}
 }

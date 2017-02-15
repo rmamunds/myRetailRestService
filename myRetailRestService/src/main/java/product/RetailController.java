@@ -41,7 +41,7 @@ public class RetailController {
 		} catch (RestClientException e) {
 			throw new ProductNotFoundException(id);
 		}
-        PersistedPrice price = repository.findOne(id);
+        Price price = repository.findOne(id).getPrice();
         if(price!=null){
 			return new MyProduct(id,productName,price);
 		}else{
@@ -60,21 +60,9 @@ public class RetailController {
 		} catch (RestClientException e) {
 			throw new ProductNotFoundException(id);
 		}
-        PersistedPrice price = updatePersistedPrice(id,product.getPrice());
+        Price price = repository.save(new PersistedPrice(id, product.getPrice())).getPrice();
         //This return results in the behavior that a consumer of this service can send an incorrect name in the initial json body and have the value corrected
         return new MyProduct(id,productName,price);
 	}
-	
-	/**
-	 * Persists an inserted the price
-	 * @param id
-	 * @param price
-	 * @return
-	 */
-	private PersistedPrice updatePersistedPrice(String id,PersistedPrice price){
-		log.info("Start updatePersistedPrice method. Id: " +id + " Value: " + price.getValue()+ " CurrencyCode " + price.getCurrencyCode());
-		return repository.save(price);
-	}
-	
 
 }

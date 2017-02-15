@@ -7,34 +7,37 @@ public class PersistedPrice {
 	@Id
 	private String id;
 	
-	private Double value;
-	private String currencyCode;
+	private Price price;
 	
 	public PersistedPrice() {
 	}
 	
-	public PersistedPrice(String id, Double value, String currencyCode) {
+	public PersistedPrice(String id, Price price) {
 		this.id = id;
-		this.value = value;
-		this.currencyCode = currencyCode;
+		this.price = price;
 	}
 	
-	@Override
-	public String toString() {
-		return String.format("PersistedPrice: id=%s, value=%s, currencyCode=%s",id,value.toString(),currencyCode);
+	public PersistedPrice(String id, Double value, String currencyCode) {
+		this.id = id;
+		this.price = new Price(value,currencyCode);
+	}
+	
+	public Price getPrice() {
+		return price;
 	}
 	
 	public Double getValue() {
-		return value;
+		return price.getValue();
 	}
-	public void setValue(Double value) {
-		this.value = value;
-	}
+
 	public String getCurrencyCode() {
-		return currencyCode;
+		return price.getCurrencyCode();
 	}
-	public void setCurrencyCode(String currencyCode) {
-		this.currencyCode = currencyCode;
+	@Override
+	public String toString() {
+		return String.format("PersistedPrice: id=%s, value=%s, currencyCode=%s",id,price.getValue().toString(),price.getCurrencyCode());
 	}
+	
+
 	
 }
