@@ -1,4 +1,4 @@
-package product;
+package myRetail;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

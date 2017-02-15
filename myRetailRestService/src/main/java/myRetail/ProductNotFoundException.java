@@ -1,4 +1,4 @@
-package product;
+package myRetail;
 
 public class ProductNotFoundException extends RuntimeException {
 

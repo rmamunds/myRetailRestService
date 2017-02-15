@@ -5,7 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import product.MyProduct;
+import myRetail.MyProduct;
+import myRetail.Price;
 
 public class MyProductTest {
     @Test public void testSimpleProduct() {

@@ -26,7 +26,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import product.RetailController;
+import myRetail.MyProduct;
+import myRetail.PersistedPrice;
+import myRetail.PersistedPriceRepository;
+import myRetail.RetailController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration

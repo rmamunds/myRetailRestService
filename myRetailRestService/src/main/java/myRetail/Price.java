@@ -1,4 +1,4 @@
-package product;
+package myRetail;
 
 
 public class Price {

@@ -1,4 +1,4 @@
-package product;
+package myRetail;
 
 
 import org.slf4j.Logger;
