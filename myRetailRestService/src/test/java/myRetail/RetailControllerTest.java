@@ -1,4 +1,4 @@
-package product;
+package myRetail;
 
 
 import static org.hamcrest.Matchers.is;
@@ -26,6 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import myRetail.Constants;
 import myRetail.MyProduct;
 import myRetail.PersistedPrice;
 import myRetail.PersistedPriceRepository;
@@ -130,4 +131,40 @@ public class RetailControllerTest {
 		.andExpect(jsonPath("$.price.currencyCode", is(LEBOWSKI_NEW_PRICE.getCurrencyCode())))
 		;
 	}
+	
+	//Exception testing
+	
+
+	public void testGetNonExistentProducts() throws Exception {
+		//Repository state does not matter as this should fail before that.
+		mockMvc.perform(get("/products/1").accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isConflict())
+		.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+		.andExpect(content().string(String.format(Constants.PRODUCT_NOT_FOUND_EXCEPTION, "1")))
+		;
+	}
+	public void testPutNonExistentProducts() throws Exception {
+		//Repository state does not matter as this should fail before that.
+		String json = new ObjectMapper().writeValueAsString(new MyProduct("1","Passed name has no effect", LEBOWSKI_NEW_PRICE.getPrice()));
+		mockMvc.perform(get("/products/1").content(json).contentType(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isConflict())
+		.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+		.andExpect(content().string(String.format(Constants.PRODUCT_NOT_FOUND_EXCEPTION, "1")))
+		;
+	}
+	
+	public void testGetNonPersistedPrice() throws Exception {
+		//Repository state is empty
+		repository.deleteAll();
+		
+		mockMvc.perform(get("/products/13860428").accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isConflict())
+		.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+		.andExpect(content().string(String.format(Constants.PRICING_INFO_NOT_FOUND_EXCEPTION, "1")))
+		;
+	}
+	
 }

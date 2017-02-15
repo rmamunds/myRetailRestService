@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
+/**
+ * Controller handles exceptions for retailController.  Additional general error handling would go here.
+ * @author Robert Amundson
+ *
+ */
 @ControllerAdvice
 public class RetailControllerExceptionHandler extends ResponseEntityExceptionHandler {
 	
