@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -25,10 +25,10 @@ public class RetailController {
 	public MyProduct product(@PathVariable("id") String id) throws Exception { 
 		return contstructFromDataStore(id);
 	}
-	@RequestMapping(value ="/products/{id}", method = RequestMethod.PUT)
-	public MyProduct updateProduct(@PathVariable("id") String id, @RequestParam(value="value", defaultValue="1.00") String value, @RequestParam(value="currencyCode", defaultValue="USD") String currencyCode) throws Exception { 
-		log.info("Got to put method Vals are id: " +id + " Value: " + value+ " CurrencyCode " + currencyCode);
-		return contstructFromDataStoreWithUpdate(id,value,currencyCode);
+	@RequestMapping(value ="/products/{id}", method = RequestMethod.PUT, headers = {"content-type=application/json"})
+	public MyProduct updateProduct(@PathVariable("id") String id, @RequestBody MyProduct product) throws Exception {
+		
+		return contstructFromDataStoreWithUpdate(id,product);
 	}
 	
 	
@@ -49,23 +49,31 @@ public class RetailController {
 		}
 	}
 	
-	private MyProduct contstructFromDataStoreWithUpdate(String id, String value, String currencyCode) throws NumberFormatException, ProductNotFoundException,PricingInfoNotFoundException{
+	private MyProduct contstructFromDataStoreWithUpdate(String id, MyProduct product) throws NumberFormatException, ProductNotFoundException,PricingInfoNotFoundException{
         RestTemplate restTemplate = new RestTemplate();
         String productName;
-		log.info("Got to updatePersistedPrice method Vals are id: " +id + " Value: " + value+ " CurrencyCode " + currencyCode);
+		log.info("Start contstructFromDataStoreWithUpdate method id: " +id);
         try {
+        	//Validate that the id matches against a valid name
             RedSkyWrapper rsp = restTemplate.getForObject(String.format(Constants.RED_SKY_REST, id), RedSkyWrapper.class);
             productName = rsp.getProductName();
 		} catch (RestClientException e) {
 			throw new ProductNotFoundException(id);
 		}
-        PersistedPrice price = updatePersistedPrice(id,value,currencyCode);
+        PersistedPrice price = updatePersistedPrice(id,product.getPrice());
+        //This return results in the behavior that a consumer of this service can send an incorrect name in the initial json body and have the value corrected
         return new MyProduct(id,productName,price);
 	}
 	
-	private PersistedPrice updatePersistedPrice(String id,String value,String currencyCode){
-		log.info("Got to updatePersistedPrice method Vals are id: " +id + " Value: " + value+ " CurrencyCode " + currencyCode);
-		return repository.save(new PersistedPrice(id, Double.valueOf(value), currencyCode));
+	/**
+	 * Persists an inserted the price
+	 * @param id
+	 * @param price
+	 * @return
+	 */
+	private PersistedPrice updatePersistedPrice(String id,PersistedPrice price){
+		log.info("Start updatePersistedPrice method. Id: " +id + " Value: " + price.getValue()+ " CurrencyCode " + price.getCurrencyCode());
+		return repository.save(price);
 	}
 	
 

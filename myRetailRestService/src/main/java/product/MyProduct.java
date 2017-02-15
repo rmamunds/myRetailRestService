@@ -1,9 +1,12 @@
 package product;
 
 public class MyProduct {
-	private final String id;
-	private final String name;
-	private final PersistedPrice price;
+	private String id;
+	private String name;
+	private PersistedPrice price;
+	
+	public MyProduct(){
+	}
 	
 	public MyProduct(String _id, String _name, PersistedPrice _price){
 		id = _id;

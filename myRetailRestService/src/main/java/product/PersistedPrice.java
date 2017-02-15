@@ -10,6 +10,8 @@ public class PersistedPrice {
 	private Double value;
 	private String currencyCode;
 	
+	public PersistedPrice() {
+	}
 	
 	public PersistedPrice(String id, Double value, String currencyCode) {
 		this.id = id;

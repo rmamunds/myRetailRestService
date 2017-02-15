@@ -3,6 +3,7 @@ package product;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,6 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import product.RetailController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -30,10 +33,16 @@ import product.RetailController;
 @ContextConfiguration
 public class RetailControllerTest {
 
+	@Autowired
+	private PersistedPriceRepository repository;
+	
     @Autowired
     private WebApplicationContext wac;
     private MockMvc mockMvc;
 
+    private static PersistedPrice LEBOWSKI_PRICE =new PersistedPrice("13860428", 29.99, "USD");
+    private static PersistedPrice LEBOWSKI_NEW_PRICE =new PersistedPrice("13860428", 19.99, "USD");
+    
     @Configuration
     @EnableAutoConfiguration
     public static class Config {
@@ -45,18 +54,37 @@ public class RetailControllerTest {
 
     @Before
     public void setUp() throws Exception {
+		repository.deleteAll();
+		//Initial test data
+		repository.save(LEBOWSKI_PRICE);
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        
     }
 
     @Test
-    public void testGetSummary() throws Exception {
+    public void testGetProducts() throws Exception {
         mockMvc.perform(get("/products/13860428").accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is("13860428")))
                 .andExpect(jsonPath("$.name", is("The Big Lebowski (Blu-ray)")))
-                //.andExpect(jsonPath("$.price.value", is(10462.0)))  //10462
+                .andExpect(jsonPath("$.price.value", is(LEBOWSKI_PRICE.getValue())))
+                .andExpect(jsonPath("$.price.currencyCode", is(LEBOWSKI_PRICE.getCurrencyCode())))
+        ;
+    }
+    
+    @Test
+    public void testPutProduct() throws Exception {
+    	String json = new ObjectMapper().writeValueAsString(new MyProduct("13860428","Passed name has no effect", LEBOWSKI_NEW_PRICE));
+        mockMvc.perform(put("/products/13860428").content(json).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id", is("13860428")))
+                .andExpect(jsonPath("$.name", is("The Big Lebowski (Blu-ray)")))
+                .andExpect(jsonPath("$.price.value", is(LEBOWSKI_NEW_PRICE.getValue())))
+                .andExpect(jsonPath("$.price.currencyCode", is(LEBOWSKI_NEW_PRICE.getCurrencyCode())))
         ;
     }
 }
