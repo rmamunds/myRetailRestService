@@ -10,9 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Uses an Application class to provide an easy bind for @SpringBootApplication
  * @author Robert Amundson
-
  */
-		
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
@@ -26,20 +24,19 @@ public class Application implements CommandLineRunner {
 	}
 	@Override
 	public void run(String... args) throws Exception {
+		if(args.length>0 && args[0].equalsIgnoreCase("sampleData")){
 		//For testing purposes a clean repository
+		log.info("Clearing existing data.");
 		repository.deleteAll();
 		//Initial test data
-		repository.save(new PersistedPrice("13860428", 29.99, "USD"));
-		repository.save(new PersistedPrice("15117729", 49.99, "USD"));
+		log.info("Populating with sample data.");
+		repository.save(new PersistedPrice("13860428", 29.99, "USD"));//lebowski
+		repository.save(new PersistedPrice("16696652", 149.99, "USD"));//beats solo
+		repository.save(new PersistedPrice("13860421", 2000.0, "YEN")); //Revolutionary girl utena
+		log.info("Sample Data Created for: \n  13860428\n  16696652\n  13860421");
+		log.info("Population finished.");
 		
-		log.info("Customers found with findAll():");
-		log.info("-------------------------------");
-		for (PersistedPrice persistedPrice : repository.findAll()) {
-			System.out.println(persistedPrice);
+		
 		}
-		log.info("********************************");
-		log.info(repository.findOne("13860428").toString());
-		log.info("********************************");
-		
 	}
 }

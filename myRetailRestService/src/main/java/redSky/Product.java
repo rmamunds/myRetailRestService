@@ -1,6 +1,14 @@
 package redSky;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+/**
+ * Product object from redsky contains an item where the current information of
+ * interest exists.
+ * 
+ * @author Robert Amundson
+ *
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Product {
 
@@ -9,7 +17,7 @@ public class Product {
 	public void setItem(Item _item) {
 		item = _item;
 	}
-	
+
 	public Item getItem() {
 		return item;
 	}

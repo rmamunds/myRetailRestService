@@ -1,17 +1,18 @@
 package redSky;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
- * Wrapper for encasing outermost json layer from Redsky.
+ * Wrapper for de-serializing outermost json layer from Redsky.
+ * 
  * @author Robert Amundson
- *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RedSkyWrapper {
-	
+
 	private Product product;
-	
-	public RedSkyWrapper(){
+
+	public RedSkyWrapper() {
 	}
 
 	public Product getProduct() {
@@ -21,16 +22,14 @@ public class RedSkyWrapper {
 	public void setProduct(Product product) {
 		this.product = product;
 	}
-	
+
 	public String getProductName() {
 		return this.getProduct().getItem().getProduct_description().getTitle();
 	}
 
-	
 	@Override
 	public String toString() {
 		return product.toString();
 	}
-	
 
 }
